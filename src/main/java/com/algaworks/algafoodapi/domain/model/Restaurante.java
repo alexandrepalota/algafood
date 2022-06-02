@@ -1,13 +1,20 @@
 package com.algaworks.algafoodapi.domain.model;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 
+@Entity
+@Table(name = "tb_restaurante")
 public class Restaurante {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "nm_restaurante")
     private String nome;
 
+    @Column(name = "vl_frete")
     private BigDecimal taxaFrete;
 
     public Long getId() {
