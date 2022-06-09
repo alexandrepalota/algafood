@@ -23,4 +23,7 @@ public class Restaurante {
     @Column(name = "vl_frete")
     private BigDecimal taxaFrete;
 
+    @ManyToOne
+    private Cozinha cozinha;
+
 }
