@@ -5,18 +5,18 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
-@Data // contém Getters, Setters, AllArgsConstructor, ToString, Equals e HashCode
+@Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(name = "tb_cozinha")
-public class Cozinha {
+@Table(name = "tb_forma_pagamento")
+public class FormaPagamento {
 
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nm_cozinha", nullable = false)
+    @Column(name = "nm_forma_pagamento", nullable = false)
     private String nome;
 
 }
