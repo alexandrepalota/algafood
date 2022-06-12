@@ -16,7 +16,7 @@ public class PermissaoRepositoryImpl implements PermissaoRepository {
     private EntityManager manager;
 
     @Override
-    public List<Permissao> todas() {
+    public List<Permissao> listar() {
         return manager.createQuery("from Permissao", Permissao.class)
                 .getResultList();
     }

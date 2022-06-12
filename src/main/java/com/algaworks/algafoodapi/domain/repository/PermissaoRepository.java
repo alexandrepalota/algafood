@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface PermissaoRepository {
 
-    List<Permissao> todas();
+    List<Permissao> listar();
 
     Permissao porId(Long id);
 

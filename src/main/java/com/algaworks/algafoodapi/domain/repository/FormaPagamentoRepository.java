@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface FormaPagamentoRepository {
 
-    List<FormaPagamento> todas();
+    List<FormaPagamento> listar();
 
     FormaPagamento porId(Long id);
 
