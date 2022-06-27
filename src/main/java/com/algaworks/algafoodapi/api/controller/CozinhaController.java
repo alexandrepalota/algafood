@@ -34,7 +34,12 @@ public class CozinhaController {
         if (cozinha != null) {
             return ResponseEntity.ok(cozinha);
         }
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        return ResponseEntity.notFound().build(); // é um atalho para a linha de cima
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Cozinha adicionar(@RequestBody Cozinha cozinha) {
+        return cozinhaRepository.adicionar(cozinha);
     }
 }
