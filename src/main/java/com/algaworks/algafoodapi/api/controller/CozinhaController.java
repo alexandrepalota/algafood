@@ -31,19 +31,10 @@ public class CozinhaController {
     @GetMapping("/{id}")
     public ResponseEntity<Cozinha> buscar(@PathVariable Long id) {
         Cozinha cozinha = cozinhaRepository.porId(id);
-//        return ResponseEntity.status(HttpStatus.OK).body(cozinha);
-        return ResponseEntity.ok(cozinha); // é um atalho para a linha de cima
-
-        /*
-        Exemplo de encaminhamento
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.LOCATION, "http://api.algafood.local:8080/cozinhas");
-
-        return ResponseEntity
-            .status(HttpStatus.FOUND)
-            .headers(headers)
-            .build();
-        */
-
+        if (cozinha != null) {
+            return ResponseEntity.ok(cozinha);
+        }
+//        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return ResponseEntity.notFound().build(); // é um atalho para a linha de cima
     }
 }
