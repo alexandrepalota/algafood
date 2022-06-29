@@ -18,23 +18,20 @@ import java.util.List;
 public class CozinhaController {
 
     @Autowired
-    private CozinhaRepository cozinhaRepository;
-
-    @Autowired
     private CozinhaService cozinhaService;
 
     @GetMapping
     public List<Cozinha> listar() {
-        return cozinhaRepository.listar();
+        return cozinhaService.listar();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Cozinha> buscar(@PathVariable Long id) {
-        Cozinha cozinha = cozinhaRepository.porId(id);
-        if (cozinha != null) {
-            return ResponseEntity.ok(cozinha);
+        try {
+            return ResponseEntity.ok(cozinhaService.buscar(id));
+        } catch (EntidadeNaoEncontradaException e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     @PostMapping
@@ -45,14 +42,14 @@ public class CozinhaController {
 
     @PutMapping("/{cozinhaId}")
     public ResponseEntity<Cozinha> atualizar(@PathVariable Long cozinhaId, @RequestBody Cozinha cozinha) {
-        Cozinha cozinhaAtual = cozinhaRepository.porId(cozinhaId);
-        if (cozinhaAtual != null) {
-//        cozinhaAtual.setNome(cozinha.getNome());
-            BeanUtils.copyProperties(cozinha, cozinhaAtual, "id"); // faz o mesmo que a linha de cima
+        try {
+            Cozinha cozinhaAtual = cozinhaService.buscar(cozinhaId);
+            BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
             cozinhaService.salvar(cozinhaAtual);
             return ResponseEntity.ok(cozinhaAtual);
+        } catch (EntidadeNaoEncontradaException e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{cozinhaId}")

@@ -9,11 +9,25 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CozinhaService {
 
     @Autowired
     private CozinhaRepository cozinhaRepository;
+
+    public Cozinha buscar(Long id) {
+        Cozinha cozinha = cozinhaRepository.porId(id);
+        if (cozinha != null) return cozinha;
+        throw new EntidadeNaoEncontradaException(
+                String.format("Não existe um cadastro de cozinha com código %d", id)
+        );
+    }
+
+    public List<Cozinha> listar() {
+        return cozinhaRepository.listar();
+    }
 
     public Cozinha salvar(Cozinha cozinha) {
         return cozinhaRepository.salvar(cozinha);
