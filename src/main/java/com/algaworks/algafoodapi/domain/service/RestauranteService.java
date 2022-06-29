@@ -1,6 +1,7 @@
 package com.algaworks.algafoodapi.domain.service;
 
 import com.algaworks.algafoodapi.domain.exception.EntidadeNaoEncontradaException;
+import com.algaworks.algafoodapi.domain.exception.EntidadeRelacionadaNaoEncontradaException;
 import com.algaworks.algafoodapi.domain.model.Cozinha;
 import com.algaworks.algafoodapi.domain.model.Restaurante;
 import com.algaworks.algafoodapi.domain.repository.CozinhaRepository;
@@ -32,8 +33,12 @@ public class RestauranteService {
     }
 
     public Restaurante salvar(Restaurante restaurante) {
-        Cozinha cozinha = cozinhaService.buscar(restaurante.getCozinha().getId());
-        restaurante.setCozinha(cozinha);
-        return restauranteRepository.salvar(restaurante);
+        try {
+            Cozinha cozinha = cozinhaService.buscar(restaurante.getCozinha().getId());
+            restaurante.setCozinha(cozinha);
+            return restauranteRepository.salvar(restaurante);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new EntidadeRelacionadaNaoEncontradaException(e.getMessage());
+        }
     }
 }
