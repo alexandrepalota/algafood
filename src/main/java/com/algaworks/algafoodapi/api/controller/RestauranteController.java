@@ -34,7 +34,7 @@ public class RestauranteController {
     }
 
     @PostMapping
-    public ResponseEntity<?> salvar(@RequestBody Restaurante restaurante) {
+    public ResponseEntity<?> adicionar(@RequestBody Restaurante restaurante) {
         try {
             restaurante = restauranteService.salvar(restaurante);
             return ResponseEntity.status(HttpStatus.CREATED).body(restaurante);
