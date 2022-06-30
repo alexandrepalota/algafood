@@ -20,22 +20,20 @@ public class RestauranteService {
     private CozinhaService cozinhaService;
 
     public List<Restaurante> listar() {
-        return restauranteRepository.listar();
+        return restauranteRepository.findAll();
     }
 
     public Restaurante bucar(Long id) {
-        Restaurante restaurante = restauranteRepository.porId(id);
-        if (restaurante != null) return restaurante;
-        throw new EntidadeNaoEncontradaException(
+        return restauranteRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(
                 String.format("Não existe um cadastro de restaurante com código %d", id)
-        );
+        ));
     }
 
     public Restaurante salvar(Restaurante restaurante) {
         try {
             Cozinha cozinha = cozinhaService.buscar(restaurante.getCozinha().getId());
             restaurante.setCozinha(cozinha);
-            return restauranteRepository.salvar(restaurante);
+            return restauranteRepository.save(restaurante);
         } catch (EntidadeNaoEncontradaException e) {
             throw new EntidadeRelacionadaNaoEncontradaException(e.getMessage());
         }

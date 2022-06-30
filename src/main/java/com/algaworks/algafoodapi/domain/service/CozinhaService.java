@@ -10,7 +10,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CozinhaService {
@@ -19,11 +18,9 @@ public class CozinhaService {
     private CozinhaRepository cozinhaRepository;
 
     public Cozinha buscar(Long id) {
-        Optional<Cozinha> cozinha = cozinhaRepository.findById(id);
-        if (cozinha.isPresent()) return cozinha.get();
-        throw new EntidadeNaoEncontradaException(
+        return cozinhaRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(
                 String.format("Não existe um cadastro de cozinha com código %d", id)
-        );
+        ));
     }
 
     public List<Cozinha> listar() {
