@@ -10,18 +10,18 @@ insert into tb_estado (nm_estado) values ('Rio Grande do Sul');
 insert into tb_estado (nm_estado) values ('Santa Catarina');
 insert into tb_estado (nm_estado) values ('Paraná');
 
-insert into tb_cidade (id, nm_cidade, estado_id) values (1, 'Rio Grande', (select id from tb_estado where nm_estado = 'Rio Grande do Sul'));
-insert into tb_cidade (id, nm_cidade, estado_id) values (2, 'Pelotas', (select id from tb_estado where nm_estado = 'Rio Grande do Sul'));
-insert into tb_cidade (id, nm_cidade, estado_id) values (3, 'Erechim', (select id from tb_estado where nm_estado = 'Rio Grande do Sul'));
-insert into tb_cidade (id, nm_cidade, estado_id) values (4, 'Florianópolis', (select id from tb_estado where nm_estado = 'Santa Catarina'));
-insert into tb_cidade (id, nm_cidade, estado_id) values (5, 'Concórdia', (select id from tb_estado where nm_estado = 'Santa Catarina'));
-insert into tb_cidade (id, nm_cidade, estado_id) values (6, 'Curitiba', (select id from tb_estado where nm_estado = 'Paraná'));
-insert into tb_cidade (id, nm_cidade, estado_id) values (7, 'Ponta Grossa', (select id from tb_estado where nm_estado = 'Paraná'));
-insert into tb_cidade (id, nm_cidade, estado_id) values (8, 'Londrina', (select id from tb_estado where nm_estado = 'Paraná'));
+insert into tb_cidade (nm_cidade, estado_id) values ('Rio Grande', (select id from tb_estado where nm_estado = 'Rio Grande do Sul'));
+insert into tb_cidade (nm_cidade, estado_id) values ('Pelotas', (select id from tb_estado where nm_estado = 'Rio Grande do Sul'));
+insert into tb_cidade (nm_cidade, estado_id) values ('Erechim', (select id from tb_estado where nm_estado = 'Rio Grande do Sul'));
+insert into tb_cidade (nm_cidade, estado_id) values ('Florianópolis', (select id from tb_estado where nm_estado = 'Santa Catarina'));
+insert into tb_cidade (nm_cidade, estado_id) values ('Concórdia', (select id from tb_estado where nm_estado = 'Santa Catarina'));
+insert into tb_cidade (nm_cidade, estado_id) values ('Curitiba', (select id from tb_estado where nm_estado = 'Paraná'));
+insert into tb_cidade (nm_cidade, estado_id) values ('Ponta Grossa', (select id from tb_estado where nm_estado = 'Paraná'));
+insert into tb_cidade (nm_cidade, estado_id) values ('Londrina', (select id from tb_estado where nm_estado = 'Paraná'));
 
-insert into tb_forma_pagamento (id, nm_forma_pagamento) values (1, 'Cartão de crédito');
-insert into tb_forma_pagamento (id, nm_forma_pagamento) values (2, 'Cartão de débito');
-insert into tb_forma_pagamento (id, nm_forma_pagamento) values (3, 'Dinheiro');
+insert into tb_forma_pagamento (nm_forma_pagamento) values ('Cartão de crédito');
+insert into tb_forma_pagamento (nm_forma_pagamento) values ('Cartão de débito');
+insert into tb_forma_pagamento (nm_forma_pagamento) values ('Dinheiro');
 
-insert into tb_permissao (id, nm_permissao, ds_permissao) values (1, 'CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
-insert into tb_permissao (id, nm_permissao, ds_permissao) values (2, 'EDITAR_COZINHAS', 'Permite editar cozinhas');
+insert into tb_permissao (nm_permissao, ds_permissao) values ('CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
+insert into tb_permissao (nm_permissao, ds_permissao) values ('EDITAR_COZINHAS', 'Permite editar cozinhas');
