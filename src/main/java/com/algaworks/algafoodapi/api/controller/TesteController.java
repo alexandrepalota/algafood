@@ -42,4 +42,14 @@ public class TesteController {
     public List<Restaurante> porNome(String nome, Long cozinhaId) {
         return restauranteRepository.findAllByNomeContainingIgnoreCaseAndCozinhaId(nome, cozinhaId);
     }
+
+    @GetMapping("/restaurantes/primeiro-por-nome")
+    public Restaurante primeiroPorNome(String nome) {
+        return restauranteRepository.findFirstByNomeContaining(nome).orElse(null);
+    }
+
+    @GetMapping("/restaurantes/top2-por-nome")
+    public List<Restaurante> top2PorNome(String nome) {
+        return restauranteRepository.findTop2ByNomeContaining(nome);
+    }
 }
