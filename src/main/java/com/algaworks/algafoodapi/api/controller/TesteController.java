@@ -1,9 +1,14 @@
 package com.algaworks.algafoodapi.api.controller;
 
+import com.algaworks.algafoodapi.domain.model.Cozinha;
 import com.algaworks.algafoodapi.domain.repository.CozinhaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/testes")
@@ -12,8 +17,13 @@ public class TesteController {
     @Autowired
     private CozinhaRepository repository;
 
-//    @GetMapping("/cozinhas/por-nome")
-//    public List<Cozinha> cozinhasPorNome(@RequestParam String nome) {
-//        return repository.consultarPorNome(nome);
-//    }
+    @GetMapping("/cozinhas/por-nome")
+    public List<Cozinha> cozinhasPorNome(@RequestParam String nome) {
+        return repository.findTodasByNome(nome);
+    }
+
+    @GetMapping("/cozinhas/unica-por-nome")
+    public Cozinha cozinhaPorNome(@RequestParam String nome) {
+        return repository.findByNome(nome).orElse(null);
+    }
 }
