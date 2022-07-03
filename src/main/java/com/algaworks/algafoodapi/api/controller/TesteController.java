@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static com.algaworks.algafoodapi.infrastructure.repository.spec.RestauranteSpecs.comFreteGratis;
-import static com.algaworks.algafoodapi.infrastructure.repository.spec.RestauranteSpecs.comNomeSemelhante;
-
 @RestController
 @RequestMapping("/testes")
 public class TesteController {
@@ -64,5 +61,10 @@ public class TesteController {
     @GetMapping("/restaurantes/com-frete-gratis")
     public List<Restaurante> restaurantesComFreteGratis(String nome) {
         return restauranteRepository.findComFreteGratis(nome);
+    }
+
+    @GetMapping("/restaurantes/buscar-primeiro")
+    public Restaurante buscarPrimeiro(String nome) {
+        return restauranteRepository.buscarPrimeiro().orElse(null);
     }
 }
