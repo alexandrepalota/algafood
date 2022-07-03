@@ -4,7 +4,7 @@ insert into tb_cozinha (nm_cozinha) values ('Indiana');
 insert into tb_restaurante (nm_restaurante, vl_frete, cozinha_id) values ('India Food', '12.00', (select id from tb_cozinha where nm_cozinha = 'Indiana'));
 insert into tb_restaurante (nm_restaurante, vl_frete, cozinha_id) values ('Palácio Tailandês', '8.00', (select id from tb_cozinha where nm_cozinha = 'Tailandesa'));
 insert into tb_restaurante (nm_restaurante, vl_frete, cozinha_id) values ('Prato Exótico', '9.00', (select id from tb_cozinha where nm_cozinha = 'Tailandesa'));
-insert into tb_restaurante (nm_restaurante, vl_frete, cozinha_id) values ('Namastê', '0.00', (select id from tb_cozinha where nm_cozinha = 'Indiana'));
+insert into tb_restaurante (nm_restaurante, vl_frete, cozinha_id) values ('Namastê', '0', (select id from tb_cozinha where nm_cozinha = 'Indiana'));
 
 insert into tb_estado (nm_estado) values ('Rio Grande do Sul');
 insert into tb_estado (nm_estado) values ('Santa Catarina');
