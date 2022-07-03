@@ -12,6 +12,11 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -24,27 +29,17 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 
     @Override
     public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
-        var parametros = new HashMap<String, Object>();
+        CriteriaQuery<Restaurante> criteria = builder.createQuery(Restaurante.class);
+        Root<Restaurante> root = criteria.from(Restaurante.class);
 
-        var jpql = new StringBuilder();
-        jpql.append("from Restaurante where 0 = 0 ");
+        Predicate nomePredicate = builder.like(root.get("nome"), "%" + nome + "%");
+        Predicate taxaInicialPredicate = builder.greaterThanOrEqualTo(root.get("taxaFrete"), taxaFreteInicial);
+        Predicate taxaFinalPredicate = builder.lessThanOrEqualTo(root.get("taxaFrete"), taxaFreteFinal);
+        criteria.where(nomePredicate, taxaInicialPredicate, taxaFinalPredicate);
 
-        if (StringUtils.hasLength(nome)) {
-            jpql.append("and nome like :nome ");
-            parametros.put("nome", "%" + nome + "%");
-        }
-        if (taxaFreteInicial != null) {
-            jpql.append("and taxaFrete >= :taxaInicial ");
-            parametros.put("taxaInicial", taxaFreteInicial);
-        }
-        if (taxaFreteFinal != null) {
-            jpql.append("and taxaFrete <= :taxaFinal");
-            parametros.put("taxaFinal", taxaFreteFinal);
-        }
-
-        var query = entityManager.createQuery(jpql.toString(), Restaurante.class);
-        parametros.forEach((chave, valor) -> query.setParameter(chave, valor));
+        TypedQuery<Restaurante> query = entityManager.createQuery(criteria);
         return query.getResultList();
     }
 }
