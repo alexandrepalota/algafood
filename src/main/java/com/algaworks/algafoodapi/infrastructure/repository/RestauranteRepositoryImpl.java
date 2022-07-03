@@ -5,7 +5,10 @@ package com.algaworks.algafoodapi.infrastructure.repository;
 // implements.
 
 import com.algaworks.algafoodapi.domain.model.Restaurante;
+import com.algaworks.algafoodapi.domain.repository.RestauranteRepository;
 import com.algaworks.algafoodapi.domain.repository.RestauranteRepositoryQueries;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -22,11 +25,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.algaworks.algafoodapi.infrastructure.repository.spec.RestauranteSpecs.comFreteGratis;
+import static com.algaworks.algafoodapi.infrastructure.repository.spec.RestauranteSpecs.comNomeSemelhante;
+
 @Repository
 public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    /*
+    Essa injeção foi feita para que o método findAll do JpaRepository pudesse ser utilizado, já que a interface
+    RestauranteRepositoryQueries (implementada nesta classe) não possui esse método.
+    Só que aí surgiu um problema: Ao injetar RestauranteRepository estourou uma exception de referência circular, pois
+    RestauranteRepository extende RestauranteRepositoryQueries.
+    Para evitar essa referência circular, foi necessário adicionar a anotação @Lazy.
+     */
+    @Autowired @Lazy
+    private RestauranteRepository restauranteRepository;
 
     @Override
     public List<Restaurante> find(String nome, BigDecimal taxaFreteInicial, BigDecimal taxaFreteFinal) {
@@ -43,5 +59,10 @@ public class RestauranteRepositoryImpl implements RestauranteRepositoryQueries {
 
         TypedQuery<Restaurante> query = entityManager.createQuery(criteria);
         return query.getResultList();
+    }
+
+    @Override
+    public List<Restaurante> findComFreteGratis(String nome) {
+        return restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
     }
 }
