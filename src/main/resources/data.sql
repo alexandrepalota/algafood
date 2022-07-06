@@ -25,3 +25,5 @@ insert into tb_forma_pagamento (nm_forma_pagamento) values ('Dinheiro');
 
 insert into tb_permissao (nm_permissao, ds_permissao) values ('CONSULTAR_COZINHAS', 'Permite consultar cozinhas');
 insert into tb_permissao (nm_permissao, ds_permissao) values ('EDITAR_COZINHAS', 'Permite editar cozinhas');
+
+insert into rl_restaurante_forma_pagamento (restaurante_id, forma_pagamento_id) values (1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (3, 3), (4, 1), (4, 3);
