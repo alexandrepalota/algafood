@@ -9,8 +9,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonRootName("cozinha") // aplicável ao xml
-@Data // contém Getters, Setters, AllArgsConstructor, ToString, Equals e HashCode
+@Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "tb_cozinha")
