@@ -19,6 +19,11 @@ insert into tb_restaurante (nm_restaurante, vl_frete, cozinha_id, data_cadastro,
 insert into tb_restaurante (nm_restaurante, vl_frete, cozinha_id, data_cadastro, data_atualizacao) values ('Prato Exótico', '9.00', (select id from tb_cozinha where nm_cozinha = 'Tailandesa'), now(), now());
 insert into tb_restaurante (nm_restaurante, vl_frete, cozinha_id, data_cadastro, data_atualizacao) values ('Namastê', '0', (select id from tb_cozinha where nm_cozinha = 'Indiana'), now(), now());
 
+insert into tb_produto (nm_produto, ds_produto, preco, restaurante_id, ativo) values ('x-tudao', 'x completaço, o legítimo morte lenta', '36.90', 1, true);
+insert into tb_produto (nm_produto, ds_produto, preco, restaurante_id, ativo) values ('bauru de filé', 'O clássico que tudo mundo ama', '32.90', 1, true);
+insert into tb_produto (nm_produto, ds_produto, preco, restaurante_id, ativo) values ('lasanha', 'lasanha de queijo e presunto', '19.99', 2, true);
+insert into tb_produto (nm_produto, ds_produto, preco, restaurante_id, ativo) values ('pastel de camarão', 'pastel delicioso e bem recheado', '12.00', 2, true);
+
 insert into tb_forma_pagamento (nm_forma_pagamento) values ('Cartão de crédito');
 insert into tb_forma_pagamento (nm_forma_pagamento) values ('Cartão de débito');
 insert into tb_forma_pagamento (nm_forma_pagamento) values ('Dinheiro');

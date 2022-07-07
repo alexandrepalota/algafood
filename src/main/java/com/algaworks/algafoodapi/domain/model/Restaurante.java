@@ -55,6 +55,7 @@ public class Restaurante {
     @Column(nullable = false)
     private LocalDateTime dataAtualizacao;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos;
 
