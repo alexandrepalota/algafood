@@ -1,6 +1,7 @@
 package com.algaworks.algafoodapi.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
@@ -29,7 +30,9 @@ public class Restaurante {
     @Column(name = "vl_frete", nullable = false)
     private BigDecimal taxaFrete;
 
-    @ManyToOne
+//    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer"}) // Resolvendo o problema de não serializar quando é LAZY
+    @ManyToOne(fetch = FetchType.LAZY) // quando termina com ToOne, o padrão é EAGER. Mudei para LAZY por causa do n+1
     @JoinColumn(name = "cozinha_id", nullable = false)
     private Cozinha cozinha;
 
