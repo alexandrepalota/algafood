@@ -16,10 +16,10 @@ public class Permissao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nm_permissao", nullable = false)
+    @Column(nullable = false)
     private String nome;
 
-    @Column(name = "ds_permissao", nullable = false)
+    @Column(nullable = false)
     private String descricao;
 
 }

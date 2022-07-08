@@ -24,14 +24,14 @@ public class Restaurante {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nm_restaurante", nullable = false)
+    @Column(nullable = false)
     private String nome;
 
-    @Column(name = "vl_frete", nullable = false)
+    @Column(nullable = false)
     private BigDecimal taxaFrete;
 
-//    @JsonIgnore
-    @ManyToOne //(fetch = FetchType.LAZY)
+
+    @ManyToOne
     @JoinColumn(name = "cozinha_id", nullable = false)
     private Cozinha cozinha;
 
@@ -39,7 +39,6 @@ public class Restaurante {
     @Embedded
     private Endereco endereco;
 
-//    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "rl_restaurante_forma_pagamento",

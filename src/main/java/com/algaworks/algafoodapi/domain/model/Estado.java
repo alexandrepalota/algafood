@@ -16,7 +16,7 @@ public class Estado {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nm_estado", nullable = false)
+    @Column(nullable = false)
     private String nome;
 
 }
