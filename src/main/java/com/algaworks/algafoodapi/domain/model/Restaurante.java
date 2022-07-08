@@ -31,17 +31,15 @@ public class Restaurante {
     private BigDecimal taxaFrete;
 
 //    @JsonIgnore
-    @JsonIgnoreProperties({"hibernateLazyInitializer"}) // Resolvendo o problema de não serializar quando é LAZY
-    @ManyToOne(fetch = FetchType.LAZY) // quando termina com ToOne, o padrão é EAGER. Mudei para LAZY por causa do n+1
+    @ManyToOne //(fetch = FetchType.LAZY)
     @JoinColumn(name = "cozinha_id", nullable = false)
     private Cozinha cozinha;
-
 
     @JsonIgnore
     @Embedded
     private Endereco endereco;
 
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "rl_restaurante_forma_pagamento",
