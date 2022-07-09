@@ -39,6 +39,7 @@ public class Restaurante {
     @Embedded
     private Endereco endereco;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "tb_restaurante_forma_pagamento",
