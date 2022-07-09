@@ -1,0 +1,1 @@
+alter table rl_restaurante_forma_pagamento rename to tb_restaurante_forma_pagamento;
