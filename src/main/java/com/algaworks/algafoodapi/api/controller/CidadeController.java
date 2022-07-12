@@ -26,47 +26,25 @@ public class CidadeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cidade> buscar(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(cidadeService.buscar(id));
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public Cidade buscar(@PathVariable Long id) {
+        return cidadeService.buscar(id);
     }
 
     @PostMapping
-    public ResponseEntity<?> adicionar(@RequestBody Cidade cidade) {
-        try {
-            cidade = cidadeService.salvar(cidade);
-            return ResponseEntity.status(HttpStatus.CREATED).body(cidade);
-        } catch (EntidadeRelacionadaNaoEncontradaException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public Cidade adicionar(@RequestBody Cidade cidade) {
+        return cidadeService.salvar(cidade);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Cidade cidade) {
-        try {
-            Cidade cidadeAtual = cidadeService.buscar(id);
-            BeanUtils.copyProperties(cidade, cidadeAtual, "id");
-            return ResponseEntity.ok(cidadeService.salvar(cidadeAtual));
-        } catch (EntidadeRelacionadaNaoEncontradaException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public Cidade atualizar(@PathVariable Long id, @RequestBody Cidade cidade) {
+        Cidade cidadeAtual = cidadeService.buscar(id);
+        BeanUtils.copyProperties(cidade, cidadeAtual, "id");
+        return cidadeService.salvar(cidadeAtual);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Cidade> remover(@PathVariable Long id) {
-        try {
-            cidadeService.excluir(id);
-            return ResponseEntity.noContent().build();
-        } catch (EntidadeEmUsoException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public void remover(@PathVariable Long id) {
+        cidadeService.excluir(id);
     }
 
 }

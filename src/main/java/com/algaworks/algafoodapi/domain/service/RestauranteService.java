@@ -13,6 +13,8 @@ import java.util.List;
 @Service
 public class RestauranteService {
 
+    private static final String NAO_ENCONTRADO = "Não existe um cadastro de restaurante com código %d";
+
     @Autowired
     private RestauranteRepository restauranteRepository;
 
@@ -25,17 +27,14 @@ public class RestauranteService {
 
     public Restaurante bucar(Long id) {
         return restauranteRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(
-                String.format("Não existe um cadastro de restaurante com código %d", id)
+                String.format(NAO_ENCONTRADO, id)
         ));
     }
 
     public Restaurante salvar(Restaurante restaurante) {
-        try {
-            Cozinha cozinha = cozinhaService.buscar(restaurante.getCozinha().getId());
-            restaurante.setCozinha(cozinha);
-            return restauranteRepository.save(restaurante);
-        } catch (EntidadeNaoEncontradaException e) {
-            throw new EntidadeRelacionadaNaoEncontradaException(e.getMessage());
-        }
+        Long cozinhaId = restaurante.getCozinha().getId();
+        Cozinha cozinha = cozinhaService.buscar(restaurante.getCozinha().getId());
+        restaurante.setCozinha(cozinha);
+        return restauranteRepository.save(restaurante);
     }
 }
