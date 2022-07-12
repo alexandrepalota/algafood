@@ -2,6 +2,7 @@ package com.algaworks.algafoodapi.api.controller;
 
 import com.algaworks.algafoodapi.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafoodapi.domain.exception.EntidadeRelacionadaNaoEncontradaException;
+import com.algaworks.algafoodapi.domain.exception.NegocioException;
 import com.algaworks.algafoodapi.domain.model.Restaurante;
 import com.algaworks.algafoodapi.domain.service.RestauranteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,7 +43,11 @@ public class RestauranteController {
     public Restaurante atualizar(@PathVariable Long id, @RequestBody Restaurante restaurante) {
         Restaurante restauranteAtual = restauranteService.bucar(id);
         BeanUtils.copyProperties(restaurante, restauranteAtual,"id", "formasPagamento", "endereco", "dataCadastro");
-        return restauranteService.salvar(restauranteAtual);
+        try {
+            return restauranteService.salvar(restauranteAtual);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
     }
 
     /*
