@@ -7,7 +7,9 @@ import com.algaworks.algafoodapi.domain.repository.CozinhaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ public class CozinhaService {
     private CozinhaRepository cozinhaRepository;
 
     public Cozinha buscar(Long id) {
-        return cozinhaRepository.findById(id).orElseThrow(() -> new EntidadeNaoEncontradaException(
+        return cozinhaRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 String.format("Não existe um cadastro de cozinha com código %d", id)
         ));
     }
@@ -35,8 +37,7 @@ public class CozinhaService {
         try {
             cozinhaRepository.deleteById(cozinhaId);
         } catch (EmptyResultDataAccessException e) {
-            throw new EntidadeNaoEncontradaException(
-                    String.format("Não existe um cadastro de cozinha com código %d", cozinhaId)
+            throw new EntidadeNaoEncontradaException(String.format("Não existe um cadastro de cozinha com código %d", cozinhaId)
             );
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
