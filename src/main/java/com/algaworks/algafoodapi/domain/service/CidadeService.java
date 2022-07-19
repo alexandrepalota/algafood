@@ -1,8 +1,9 @@
 package com.algaworks.algafoodapi.domain.service;
 
+import com.algaworks.algafoodapi.domain.exception.CidadeNaoEncontradaException;
 import com.algaworks.algafoodapi.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafoodapi.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafoodapi.domain.exception.EntidadeRelacionadaNaoEncontradaException;
+import com.algaworks.algafoodapi.domain.exception.EstadoNaoEncontradoException;
 import com.algaworks.algafoodapi.domain.model.Cidade;
 import com.algaworks.algafoodapi.domain.model.Estado;
 import com.algaworks.algafoodapi.domain.repository.CidadeRepository;
@@ -16,7 +17,6 @@ import java.util.List;
 @Service
 public class CidadeService {
 
-    public static final String NAO_ENCONTRADO = "Não existe um cadastro de cidade com código %d";
     public static final String EM_USO = "Cidade de código %d não pode ser removida, pois está em uso";
     @Autowired
     private CidadeRepository cidadeRepository;
@@ -30,7 +30,7 @@ public class CidadeService {
 
     public Cidade buscar(Long id) {
         return cidadeRepository.findById(id).orElseThrow(() ->
-                new EntidadeNaoEncontradaException(String.format(NAO_ENCONTRADO, id)));
+                new CidadeNaoEncontradaException(id));
     }
 
     public Cidade salvar(Cidade cidade) {
@@ -38,7 +38,7 @@ public class CidadeService {
             Estado estado = estadoService.buscar(cidade.getEstado().getId());
             cidade.setEstado(estado);
             return cidadeRepository.save(cidade);
-        } catch (EntidadeNaoEncontradaException e) {
+        } catch (EstadoNaoEncontradoException e) {
             throw new EntidadeRelacionadaNaoEncontradaException(e.getMessage());
         }
     }
@@ -47,7 +47,7 @@ public class CidadeService {
         try {
             cidadeRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new EntidadeNaoEncontradaException(String.format(NAO_ENCONTRADO, id));
+            throw new CidadeNaoEncontradaException(id);
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(String.format(EM_USO, id));
         }
