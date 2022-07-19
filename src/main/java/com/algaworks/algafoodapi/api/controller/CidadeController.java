@@ -33,7 +33,11 @@ public class CidadeController {
 
     @PostMapping
     public Cidade adicionar(@RequestBody Cidade cidade) {
-        return cidadeService.salvar(cidade);
+        try {
+            return cidadeService.salvar(cidade);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
