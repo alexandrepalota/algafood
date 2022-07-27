@@ -6,7 +6,6 @@ import com.algaworks.algafoodapi.domain.exception.NegocioException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -18,32 +17,49 @@ import java.time.LocalDateTime;
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler /*superclasse que trata todas as exceptions do spring*/ {
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
-    public ResponseEntity<?> tratarEntidadeNaoEncontradaException(
+    public ResponseEntity<?> handleEntidadeNaoEncontradaException(
             EntidadeNaoEncontradaException ex, WebRequest request) {
-        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ProblemType problemType = ProblemType.ENTIDADE_NAO_ENCONTRADA;
+        String detail = ex.getMessage();
+
+        // Fez desse jeito (dando o .build() só aqui) porque caso queira customizar, adicionar novas propriedades,
+        // elas podem ser encadeadas aqui, antes do build.
+        Problem problem = createProblemBuilder(status, problemType, detail).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
     @ExceptionHandler(NegocioException.class)
-    public ResponseEntity<?> tratarNegocioException(NegocioException ex, WebRequest request) {
+    public ResponseEntity<?> handleNegocioException(NegocioException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler(EntidadeEmUsoException.class)
-    public ResponseEntity<?> tratarEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
+    public ResponseEntity<?> handleEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
         return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
-    
+
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers, HttpStatus status, WebRequest request) {
         if (body == null) {
-            body = Problema.builder()
-                    .dataHora(LocalDateTime.now())
-                    .mensagem(status.getReasonPhrase()).build();
+            body = Problem.builder()
+                    .status(status.value())
+                    .title(status.getReasonPhrase()).build();
         } else if (body instanceof String) {
-            body = Problema.builder()
-                    .dataHora(LocalDateTime.now())
-                    .mensagem((String) body).build();
+            body = Problem.builder()
+                    .status(status.value())
+                    .title((String) body).build();
         }
         return super.handleExceptionInternal(ex, body, headers, status, request);
+    }
+
+    // esse ProblemBuilder interno do Problem é o builder criado pelo Lombok
+    private Problem.ProblemBuilder createProblemBuilder(HttpStatus status, ProblemType problemType, String detail) {
+        return Problem.builder()
+                .status(status.value())
+                .type(problemType.getUri())
+                .title(problemType.getTitle())
+                .detail(detail);
     }
 }
