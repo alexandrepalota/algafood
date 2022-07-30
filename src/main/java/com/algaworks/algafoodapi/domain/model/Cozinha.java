@@ -23,7 +23,7 @@ import java.util.List;
 @Table(name = "tb_cozinha")
 public class Cozinha {
 
-    @NotNull(groups = {Groups.CadastroRestauranteGroup.class})
+    @NotNull(groups = {Groups.CozinhaId.class})
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
