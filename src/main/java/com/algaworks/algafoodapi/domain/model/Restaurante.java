@@ -1,5 +1,6 @@
 package com.algaworks.algafoodapi.domain.model;
 
+import com.algaworks.algafoodapi.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -38,16 +39,17 @@ public class Restaurante {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @NotBlank(groups = {Groups.CadastroRestauranteGroup.class})
     @Column(nullable = false)
     private String nome;
 
-    @DecimalMin("0")
+    @NotNull(groups = {Groups.CadastroRestauranteGroup.class})
+    @DecimalMin(value = "0", groups = {Groups.CadastroRestauranteGroup.class})
     @Column(nullable = false)
     private BigDecimal taxaFrete;
 
     @Valid
-    @NotNull
+    @NotNull(groups = {Groups.CadastroRestauranteGroup.class})
     @ManyToOne
     @JoinColumn(name = "cozinha_id", nullable = false)
     private Cozinha cozinha;
