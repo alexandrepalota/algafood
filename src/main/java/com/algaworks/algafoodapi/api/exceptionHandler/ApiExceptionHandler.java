@@ -8,6 +8,9 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +34,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler /*superc
     private static final String USER_MESSAGE = "Ocorreu um erro interno inesperado no sistema. "
             + "Tente novamente e se o problema persistir, entre em contato "
             + "com o administrador do sistema.";
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
@@ -82,51 +88,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler /*superc
                 .build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
-    }
-
-    private ResponseEntity<Object> handleMethodArgumentTypeMismatch(
-            MethodArgumentTypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        ProblemType problemType = ProblemType.PARAMETRO_INVALIDO;
-        String detail = String.format("O parâmetro de URL '%s' recebeu o valor '%s', "
-                        + "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
-                ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
-        Problem problem = createProblemBuilder(status, problemType, detail)
-                .userMessage(USER_MESSAGE)
-                .build();
-        return handleExceptionInternal(ex, problem, headers, status, request);
-    }
-
-    private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        String path = joinPath(ex.getPath());
-        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
-        String detail = String.format("A propriedade '%s' recebeu o valor '%s' que é de um tipo inválido. " +
-                "Corrija e informe o valor de um tipo '%s'.", path, ex.getValue(), ex.getTargetType().getSimpleName());
-        Problem problem = createProblemBuilder(status, problemType, detail)
-                .userMessage(USER_MESSAGE)
-                .build();
-        return handleExceptionInternal(ex, problem, headers, status, request);
-    }
-
-    private ResponseEntity<Object> handlePropertyBinding(PropertyBindingException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        // Criei o método joinPath para reaproveitar em todos os métodos que precisam
-        // concatenar os nomes das propriedades (separando por ".")
-        String path = joinPath(ex.getPath());
-
-        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
-        String detail = String.format("A propriedade '%s' não existe. "
-                + "Corrija ou remova essa propriedade e tente novamente.", path);
-
-        Problem problem = createProblemBuilder(status, problemType, detail)
-                .userMessage(USER_MESSAGE)
-                .build();
-
-        return handleExceptionInternal(ex, problem, headers, status, request);
-    }
-
-    private String joinPath(List<JsonMappingException.Reference> references) {
-        return references.stream()
-                .map(JsonMappingException.Reference::getFieldName)
-                .collect(Collectors.joining("."));
     }
 
     @ExceptionHandler(EntidadeNaoEncontradaException.class)
@@ -187,10 +148,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler /*superc
         String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
         BindingResult bindResult = ex.getBindingResult();
         List<Problem.Field> fields = bindResult.getFieldErrors()
-                .stream().map(fieldError -> Problem.Field.builder()
-                        .name(fieldError.getField())
-                        .userMessage(fieldError.getDefaultMessage())
-                        .build()).collect(Collectors.toList());
+                .stream().map(fieldError -> {
+                    String message = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+                    return Problem.Field.builder()
+                            .name(fieldError.getField())
+                            .userMessage(message)
+                            .build();
+                }).collect(Collectors.toList());
         Problem problem = createProblemBuilder(status, problemType, detail)
                 .userMessage(detail)
                 .fields(fields)
@@ -206,5 +170,50 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler /*superc
                 .title(problemType.getTitle())
                 .detail(detail)
                 .timestamp(LocalDateTime.now());
+    }
+
+    private ResponseEntity<Object> handleMethodArgumentTypeMismatch(
+            MethodArgumentTypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        ProblemType problemType = ProblemType.PARAMETRO_INVALIDO;
+        String detail = String.format("O parâmetro de URL '%s' recebeu o valor '%s', "
+                        + "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
+                ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(USER_MESSAGE)
+                .build();
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+    private ResponseEntity<Object> handleInvalidFormat(InvalidFormatException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        String path = joinPath(ex.getPath());
+        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+        String detail = String.format("A propriedade '%s' recebeu o valor '%s' que é de um tipo inválido. " +
+                "Corrija e informe o valor de um tipo '%s'.", path, ex.getValue(), ex.getTargetType().getSimpleName());
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(USER_MESSAGE)
+                .build();
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+    private ResponseEntity<Object> handlePropertyBinding(PropertyBindingException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        // Criei o método joinPath para reaproveitar em todos os métodos que precisam
+        // concatenar os nomes das propriedades (separando por ".")
+        String path = joinPath(ex.getPath());
+
+        ProblemType problemType = ProblemType.MENSAGEM_INCOMPREENSIVEL;
+        String detail = String.format("A propriedade '%s' não existe. "
+                + "Corrija ou remova essa propriedade e tente novamente.", path);
+
+        Problem problem = createProblemBuilder(status, problemType, detail)
+                .userMessage(USER_MESSAGE)
+                .build();
+
+        return handleExceptionInternal(ex, problem, headers, status, request);
+    }
+
+    private String joinPath(List<JsonMappingException.Reference> references) {
+        return references.stream()
+                .map(JsonMappingException.Reference::getFieldName)
+                .collect(Collectors.joining("."));
     }
 }
