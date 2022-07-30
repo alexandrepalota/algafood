@@ -45,7 +45,7 @@ public class Restaurante {
     @Column(nullable = false)
     private String nome;
 
-    @NotNull(groups = {Groups.CozinhaId.class})
+    @NotNull
     @PositiveOrZero
     @Column(nullable = false)
     private BigDecimal taxaFrete;
