@@ -1,6 +1,6 @@
 package com.algaworks.algafoodapi.domain.model;
 
-import com.algaworks.algafoodapi.Groups;
+import com.algaworks.algafoodapi.core.validation.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -46,7 +46,7 @@ public class Restaurante {
     private String nome;
 
     @NotNull
-    @PositiveOrZero
+    @PositiveOrZero(message = "{TaxaFrete.invalida}")
     @Column(nullable = false)
     private BigDecimal taxaFrete;
 
